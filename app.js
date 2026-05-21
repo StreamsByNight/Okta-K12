@@ -1,39 +1,32 @@
-// Initialize Custom Okta Engine Context utilizing your instance URL
 const oktaSignIn = new OktaSignIn({
-  baseUrl: 'https://integrator-4230027.okta.com', 
-  clientId: '0oa13a39wvaIasHaV698', // Your confirmed Client ID
-  
-  // Hardcoded to match your exact GitHub Pages path to prevent routing mismatches
-  redirectUri: 'https://streamsbynight.github.io/Okta-K12/', 
-  
+  baseUrl: 'https://integrator-4230027.okta.com',
+  clientId: '0oa13a39wvaIasHaV698',
+  redirectUri: 'https://streamsbynight.github.io/Okta-K12/',
   authParams: {
-    // FIXED: For free dev instances, the base URL is your default authorization server issuer
-    issuer: 'https://integrator-4230027.okta.com', 
+    issuer: 'https://integrator-4230027.okta.com',
     scopes: ['openid', 'profile', 'email'],
     pkce: true
   },
-  
   i18n: {
     en: {
-      'primaryauth.title': ' ',       // Suppresses default header to match design framework
-      'primaryauth.submit': 'LOG IN'  // Sets CTA label text behavior
+      'primaryauth.title': ' ',
+      'primaryauth.submit': 'LOG IN'
     }
   }
 });
 
-// Evaluate identity handshake return parameters from address routing tokens
 if (oktaSignIn.authClient.isLoginRedirect()) {
   oktaSignIn.authClient.token.parseFromUrl()
-    .then(tokens => {
+    .then(function(tokens) {
       oktaSignIn.authClient.tokenManager.setTokens(tokens);
       showWelcomePage();
     })
-    .catch(err => {
-      console.error('URL parse configuration verification context failure:', err);
+    .catch(function(err) {
+      console.error('Token parsing error:', err);
     });
 } else {
   oktaSignIn.authClient.session.get()
-    .then(res => {
+    .then(function(res) {
       if (res.status === 'ACTIVE') {
         showWelcomePage();
       } else {
@@ -48,12 +41,12 @@ function showLoginPage() {
   
   oktaSignIn.showSignInToGetTokens({
     el: '#okta-login-container'
-  }).then(tokens => {
+  }).then(function(tokens) {
     oktaSignIn.authClient.tokenManager.setTokens(tokens);
     oktaSignIn.remove();
     showWelcomePage();
-  }).catch(err => {
-    console.error('Sign-in interaction processing errors caught:', err);
+  }).catch(function(err) {
+    console.error('Sign-in widget execution error:', err);
   });
 }
 
@@ -62,6 +55,6 @@ function showWelcomePage() {
   document.getElementById('welcome-container').style.display = 'block';
 }
 
-document.getElementById('logout-btn').addEventListener('click', () => {
+document.getElementById('logout-btn').addEventListener('click', function() {
   oktaSignIn.authClient.signOut();
 });
