@@ -8,7 +8,6 @@
     <link href="https://global.okta.com/okta-signin-widget/7.x/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
     
     <style>
-        /* Main page layout configuration to match the K12 layout */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #ffffff;
@@ -47,13 +46,12 @@
             text-align: left;
         }
 
-        /* Target and adjust Okta native UI blocks */
         #okta-login-container {
             width: 100%;
         }
         
         #okta-login-container .okta-sign-in-header {
-            display: none !important; /* Disables standard Okta header block */
+            display: none !important; 
         }
 
         #okta-login-container .auth-container.main-container {
@@ -64,7 +62,6 @@
             margin: 0 !important;
         }
 
-        /* Match custom K12 button signature color */
         #okta-login-container .button-primary {
             background: #1a53ff !important;
             border-color: #1a53ff !important;
@@ -76,7 +73,6 @@
             border-radius: 4px !important;
         }
 
-        /* Footer and structural context rules */
         .extra-links {
             margin-top: 15px;
             font-size: 15px;
@@ -129,7 +125,7 @@
 
     <div class="login-wrapper" id="content-wrapper">
         <div class="logo-container">
-            <img src="https://www.k12.com/etc.clientlibs/k12/clientlibs/clientlib-site/resources/images/logo.svg" alt="K12 Logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1f/K12_Inc_Logo.svg" alt="K12 Logo">
         </div>
 
         <h1 class="login-header">Login</h1>
