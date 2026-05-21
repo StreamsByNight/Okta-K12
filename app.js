@@ -1,11 +1,14 @@
 // Initialize Custom Okta Engine Context utilizing your instance URL
 const oktaSignIn = new OktaSignIn({
   baseUrl: 'https://integrator-4230027.okta.com', 
-  clientId: '0oa13a39wvaIasHaV698', // <-- REPLACE THIS WITH YOUR OIDC CLIENT ID
-  redirectUri: window.location.origin + window.location.pathname, 
+  clientId: '0oa13a39wvaIasHaV698', // Your confirmed Client ID
+  
+  // Hardcoded to match your exact GitHub Pages path to prevent routing mismatches
+  redirectUri: 'https://streamsbynight.github.io/Okta-K12/', 
   
   authParams: {
-    issuer: 'https://integrator-4230027.okta.com/oauth2/default', 
+    // FIXED: For free dev instances, the base URL is your default authorization server issuer
+    issuer: 'https://integrator-4230027.okta.com', 
     scopes: ['openid', 'profile', 'email'],
     pkce: true
   },
