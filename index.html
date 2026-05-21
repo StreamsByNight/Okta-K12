@@ -125,7 +125,7 @@
 
     <div class="login-wrapper" id="content-wrapper">
         <div class="logo-container">
-            <img src="https://raw.githubusercontent.com/streamsbynight/Okta-K12/main/K12_Inc_Logo.svg" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/1f/K12_Inc_Logo.svg'" alt="K12 Logo" style="width:180px; height:auto;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1f/K12_Inc_Logo.svg" alt="K12 Logo" style="width:180px; height:auto;">
         </div>
 
         <h1 class="login-header">Login</h1>
@@ -156,6 +156,68 @@
     </div>
 
     <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/7.x/js/okta-sign-in.min.js" type="text/javascript"></script>
-    <script src="app.js"></script>
+    
+    <script>
+        const oktaSignIn = new OktaSignIn({
+          baseUrl: 'https://integrator-4230027.okta.com',
+          clientId: '0oa13a39wvaIasHaV698',
+          redirectUri: 'https://streamsbynight.github.io/Okta-K12/',
+          authParams: {
+            issuer: 'https://integrator-4230027.okta.com',
+            scopes: ['openid', 'profile', 'email'],
+            pkce: true
+          },
+          i18n: {
+            en: {
+              'primaryauth.title': ' ',
+              'primaryauth.submit': 'LOG IN'
+            }
+          }
+        });
+
+        if (oktaSignIn.authClient.isLoginRedirect()) {
+          oktaSignIn.authClient.token.parseFromUrl()
+            .then(function(tokens) {
+              oktaSignIn.authClient.tokenManager.setTokens(tokens);
+              showWelcomePage();
+            })
+            .catch(function(err) {
+              console.error('Token parsing error:', err);
+            });
+        } else {
+          oktaSignIn.authClient.session.get()
+            .then(function(res) {
+              if (res.status === 'ACTIVE') {
+                showWelcomePage();
+              } else {
+                showLoginPage();
+              }
+            });
+        }
+
+        function showLoginPage() {
+          document.getElementById('welcome-container').style.display = 'none';
+          document.getElementById('content-wrapper').style.display = 'flex';
+          
+          oktaSignIn.showSignInToGetTokens({
+            el: '#okta-login-container'
+          }).then(function(tokens) {
+            oktaSignIn.authClient.tokenManager.setTokens(tokens);
+            oktaSignIn.remove();
+            showWelcomePage();
+          }).catch(function(err) {
+            console.error('Widget render error:', err);
+          });
+        }
+
+        function showWelcomePage() {
+          document.getElementById('content-wrapper').style.display = 'none';
+          document.getElementById('welcome-container').style.display = 'block';
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', function() {
+          oktaSignIn.authClient.signOut();
+        });
+    </script>
 </body>
 </html>
