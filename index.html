@@ -16,7 +16,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/okta-signin-widget/7.14.0/js/okta-sign-in.min.js" type="text/javascript"></script>
     
     <script>
-        // Minimal configuration object pointing directly to your live tenant
         const config = {
             baseUrl: 'https://integrator-4230027.okta.com',
             clientId: '0oa13a39wvaIasHaV698',
@@ -25,6 +24,22 @@
                 issuer: 'https://integrator-4230027.okta.com',
                 scopes: ['openid', 'profile', 'email'],
                 pkce: true
+            },
+            
+            // Text overrides to change UI references from "Email" to "Username"
+            i18n: {
+                en: {
+                    'primaryauth.title': 'Sign In',
+                    'primaryauth.username.placeholder': 'Username',
+                    'primaryauth.username.tooltip': 'Enter your username'
+                }
+            },
+
+            // ADDED: This function tells the widget how to process raw usernames.
+            // If the user types a plain username (like "jdoe"), it suppresses 
+            // the widget's automatic email format requirements.
+            transformUsername: function (username, operation) {
+                return username; 
             }
         };
 
@@ -35,6 +50,9 @@
                 el: '#diagnostic-login-container'
             }).then(function(tokens) {
                 console.log("Success! Tokens received:", tokens);
+                
+                // Stores tokens securely in your browser session memory
+                oktaSignIn.authClient.tokenManager.setTokens(tokens);
                 alert("Login successful!");
             }).catch(function(err) {
                 console.error("Widget rendering execution error:", err);
