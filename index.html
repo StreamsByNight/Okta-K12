@@ -6,7 +6,6 @@
     <title>K12 OLS Login</title>
     
     <style>
-        /* Layout Structure */
         html, body {
             margin: 0;
             padding: 0;
@@ -18,7 +17,7 @@
             overflow: hidden;
         }
 
-        /* Left Column: Login / Setup Panel */
+        /* Left Column Panel layout */
         .login-column {
             width: 40%;
             min-width: 450px;
@@ -33,7 +32,7 @@
             overflow-y: auto;
         }
 
-        /* Right Column: Hero Image */
+        /* Right Column Panel image display frame */
         .image-column {
             width: 60%;
             height: 100%;
@@ -42,7 +41,6 @@
             background-position: center;
         }
 
-        /* K12 Brand Heading Style with SVG Logo */
         .brand-header {
             width: 100%;
             max-width: 340px;
@@ -55,7 +53,6 @@
             display: block;
         }
 
-        /* Views Configuration toggles via JavaScript */
         .view-panel {
             width: 100%;
             max-width: 340px;
@@ -98,10 +95,9 @@
             outline: none;
         }
         .input-group input:focus {
-            border-color: #165ca3;
+            border-color: #1a73e8;
         }
 
-        /* Form Button Styling */
         .action-btn {
             width: 100%;
             padding: 12px;
@@ -119,7 +115,6 @@
             background-color: #155cb4;
         }
 
-        /* Sub-help and Dynamic View Switcher Links */
         .help-links {
             margin-top: 25px;
             font-size: 13px;
@@ -143,7 +138,6 @@
             text-decoration: underline;
         }
 
-        /* Success & Error Feedback Box Layouts */
         .message-box {
             padding: 15px;
             border-radius: 4px;
@@ -210,6 +204,21 @@
             <div id="setup-success" class="message-box success"></div>
 
             <div class="input-group">
+                <label for="setup-email">Email Address</label>
+                <input type="email" id="setup-email" placeholder="name@example.com">
+            </div>
+
+            <div class="input-group">
+                <label for="setup-firstname">First Name</label>
+                <input type="text" id="setup-firstname">
+            </div>
+
+            <div class="input-group">
+                <label for="setup-lastname">Last Name</label>
+                <input type="text" id="setup-lastname">
+            </div>
+
+            <div class="input-group">
                 <label for="registration-id">Registration ID</label>
                 <input type="text" id="registration-id" placeholder="Enter Registration ID">
             </div>
@@ -229,7 +238,6 @@
     <script src="https://global.oktacdn.com/okta-auth-js/7.2.0/okta-auth-js.min.js" type="text/javascript"></script>
 
     <script>
-        // Global Navigation View Switcher Routine
         function switchView(viewId) {
             document.querySelectorAll('.view-panel').forEach(view => {
                 view.classList.remove('active');
@@ -237,7 +245,6 @@
             document.getElementById(viewId).classList.add('active');
         }
 
-        // Target credentials for active user validation pipelines
         const authClient = new OktaAuth({
             url: 'https://integrator-4230027.okta.com',
             clientId: '0oa13a39wvaIasHaV698',
@@ -246,7 +253,7 @@
             pkce: true
         });
 
-        // Handler Pipeline for Primary Sign In Form Action
+        // Form handler logic for login authentication pipeline requests
         document.getElementById('login-submit-btn').addEventListener('click', async () => {
             const usernameInput = document.getElementById('username').value;
             const passwordInput = document.getElementById('password').value;
@@ -271,37 +278,52 @@
                 if (transaction.status === 'SUCCESS') {
                     successAlert.textContent = "Success! Authentication handshake completed.";
                     successAlert.style.display = 'block';
-                    console.log('Session Token Authorized:', transaction.sessionToken);
-                } else {
-                    errorAlert.textContent = `Status verification state context returned: ${transaction.status}`;
-                    errorAlert.style.display = 'block';
                 }
             } catch (err) {
-                console.error(err);
                 errorAlert.textContent = err.message || "Authentication credentials rejected.";
                 errorAlert.style.display = 'block';
             }
         });
 
-        // Handler Pipeline for Okta Self-Registration Verification ID Form Action
-        document.getElementById('setup-submit-btn').addEventListener('click', () => {
-            const registrationCode = document.getElementById('registration-id').value;
+        // Form handler logic for custom user registration enrollment pipelines
+        document.getElementById('setup-submit-btn').addEventListener('click', async () => {
+            const email = document.getElementById('setup-email').value;
+            const firstName = document.getElementById('setup-firstname').value;
+            const lastName = document.getElementById('setup-lastname').value;
+            const registrationID = document.getElementById('registration-id').value;
+            
             const errorAlert = document.getElementById('setup-error');
             const successAlert = document.getElementById('setup-success');
 
             errorAlert.style.display = 'none';
             successAlert.style.display = 'none';
 
-            if (!registrationCode) {
-                errorAlert.textContent = "Please enter your valid Registration ID tracking string to proceed.";
+            if (!email || !firstName || !lastName || !registrationID) {
+                errorAlert.textContent = "All form input fields are required to enroll.";
                 errorAlert.style.display = 'block';
                 return;
             }
 
-            // Diagnostic feedback to verify processing logic loop functions normally
-            console.log("Registration enrollment verification initialized with target validation ID code:", registrationCode);
-            successAlert.textContent = "Code received. Connecting to your profile directory data entry token path...";
-            successAlert.style.display = 'block';
+            try {
+                // Initialize modern enrollment pipeline payload mapping 
+                const response = await authClient.idx.register({
+                    userProfile: {
+                        email: email,
+                        firstName: firstName,
+                        lastName: lastName,
+                        registrationID: registrationID // Matches custom Okta user variable
+                    }
+                });
+
+                console.log("Profile enrollment response returned:", response);
+                successAlert.textContent = "Registration details approved and pushed into your user profiles directories!";
+                successAlert.style.display = 'block';
+
+            } catch (err) {
+                console.error("Profile enrollment processing error:", err);
+                errorAlert.textContent = err.message || "Registration submission layout declined.";
+                errorAlert.style.display = 'block';
+            }
         });
     </script>
 </body>
