@@ -5,6 +5,15 @@
     <title>Okta Connection Test</title>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/okta-signin-widget/7.14.0/css/okta-sign-in.min.css" type="text/css" rel="stylesheet">
+    
+    <style>
+        /* Force the login container area to be visible and have spacing */
+        #diagnostic-login-container {
+            min-height: 400px;
+            margin-top: 20px;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
 
@@ -16,7 +25,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/okta-signin-widget/7.14.0/js/okta-sign-in.min.js" type="text/javascript"></script>
     
     <script>
-        // Configured precisely for your validated tenant and origin paths
         const config = {
             baseUrl: 'https://integrator-4230027.okta.com',
             clientId: '0oa13a39wvaIasHaV698',
@@ -39,13 +47,18 @@
         };
 
         try {
-            // Initialize the identity interface engine
             const oktaSignIn = new OktaSignIn(config);
             
-            // FIXED: Standard rendering method for v7.x widgets
-            oktaSignIn.showSignInAndRedirect({
+            // FIXED: Using renderEl instead of showSignInAndRedirect 
+            // This forces version 7.x to render directly into our placeholder element
+            oktaSignIn.renderEl({
                 el: '#diagnostic-login-container'
-            }).catch(function(err) {
+            }, function success(res) {
+                if (res.status === 'SUCCESS') {
+                    console.log('User successfully authenticated!', res);
+                    res.session.setCookieAndRedirect(config.redirectUri);
+                }
+            }, function error(err) {
                 console.error("Widget rendering execution error:", err);
             });
             
