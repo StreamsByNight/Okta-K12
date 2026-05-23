@@ -38,7 +38,6 @@
                 scopes: ['openid', 'profile', 'email'],
                 pkce: true
             },
-            // Enables smooth frontend interaction rendering
             useInteractionCodeFlow: true, 
             i18n: {
                 en: {
@@ -57,8 +56,15 @@
             oktaSignIn.renderEl({
                 el: '#diagnostic-login-container'
             }, function success(res) {
+                // FIXED: Version 7.x handles successful authorization via tokens 
                 if (res.status === 'SUCCESS') {
-                    res.session.setCookieAndRedirect(config.redirectUri);
+                    console.log('Successfully connected! Handling tokens...', res);
+                    
+                    // Save tokens to the browser manager and redirect cleanly
+                    if (res.tokens) {
+                        oktaSignIn.authClient.tokenManager.setTokens(res.tokens);
+                        window.location.href = config.redirectUri;
+                    }
                 }
             }, function error(err) {
                 console.error("Widget layout rendering error:", err);
