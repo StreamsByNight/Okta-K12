@@ -15,7 +15,7 @@
         }
         #diagnostic-login-container {
             margin-top: 30px;
-            min-height: 450px;
+            min-height: 500px;
         }
     </style>
 </head>
@@ -38,6 +38,8 @@
                 scopes: ['openid', 'profile', 'email'],
                 pkce: true
             },
+            // Enables smooth frontend interaction rendering
+            useInteractionCodeFlow: true, 
             i18n: {
                 en: {
                     'primaryauth.title': 'Sign In',
