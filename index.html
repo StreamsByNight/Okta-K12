@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>K12 OLS Login</title>
     
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/okta-signin-widget/5.16.0/css/okta-sign-in.min.css" type="text/css" rel="stylesheet">
-    
     <style>
-        /* Modern Layout Reset */
+        /* Layout Structure to match the video exactly */
         html, body {
             margin: 0;
             padding: 0;
@@ -20,7 +18,7 @@
             overflow: hidden;
         }
 
-        /* Left Column: Login Panel */
+        /* Left Column: Login Form Panel */
         .login-column {
             width: 40%;
             min-width: 450px;
@@ -29,86 +27,126 @@
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
-            padding: 40px 20px;
+            padding: 60px 50px;
             box-sizing: border-box;
             background-color: #ffffff;
             overflow-y: auto;
         }
 
-        /* Right Column: Hero Image Feature */
+        /* Right Column: Hero Image */
         .image-column {
             width: 60%;
             height: 100%;
             background-image: url('https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?auto=format&fit=crop&w=1200&q=80');
             background-size: cover;
             background-position: center;
-            position: relative;
         }
 
-        /* K12 Branding Header Placeholder */
+        /* K12 Brand Heading Style */
         .brand-header {
             width: 100%;
-            max-width: 400px;
+            max-width: 340px;
             text-align: left;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
         }
         .brand-header h1 {
-            color: #0066cc;
-            font-size: 42px;
+            color: #165ca3;
+            font-size: 46px;
             margin: 0;
             font-weight: bold;
             font-style: italic;
+            letter-spacing: -1px;
         }
 
-        /* Success Banner Notification */
-        .success-banner {
+        /* Pure HTML Form Structure styling matching K12 OLS */
+        .form-container {
             width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            background-color: #e6f4ea;
-            color: #137333;
-            border-radius: 8px;
-            text-align: center;
+            max-width: 340px;
+            margin-top: 15px;
+        }
+        .form-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #333333;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             box-sizing: border-box;
-            display: none;
-            margin-top: 20px;
+            outline: none;
+        }
+        .input-group input:focus {
+            border-color: #165ca3;
         }
 
-        /* Okta UI Wrapper Styling overrides to match classic layouts */
-        #okta-login-container {
+        /* Custom Login Button Styling matching the blue block in video */
+        .login-btn {
             width: 100%;
-            max-width: 400px;
+            padding: 12px;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            letter-spacing: 0.5px;
         }
-        #okta-sign-in {
-            margin: 0 !important;
-            border: none !important;
-            box-shadow: none !important;
-            width: 100% !important;
-        }
-        #okta-sign-in .auth-header {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            border-bottom: none !important;
-        }
-        #okta-sign-in .okta-form-input-field input {
-            border-radius: 4px !important;
-            border: 1px solid #ccc !important;
-        }
-        #okta-sign-in .button-primary {
-            background: #0066cc !important;
-            border-color: #0052a3 !important;
-            border-radius: 4px !important;
+        .login-btn:hover {
+            background-color: #155cb4;
         }
 
-        /* Responsive Breakpoint for Small Screens */
+        /* Help links area mimicking production footer links */
+        .help-links {
+            margin-top: 25px;
+            font-size: 13px;
+            text-align: left;
+            width: 100%;
+            max-width: 340px;
+        }
+        .help-links a {
+            color: #165ca3;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .help-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Success & Error Feedback Popups */
+        .message-box {
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
+            width: 100%;
+            max-width: 340px;
+            box-sizing: border-box;
+        }
+        .error { background-color: #fce8e6; color: #c5221f; border: 1px solid #fad2cf; }
+        .success { background-color: #e6f4ea; color: #137333; border: 1px solid #ceead6; }
+
         @media (max-width: 800px) {
-            .image-column {
-                display: none;
-            }
-            .login-column {
-                width: 100%;
-                min-width: 100%;
-            }
+            .image-column { display: none; }
+            .login-column { width: 100%; min-width: 100%; }
         }
     </style>
 </head>
@@ -119,63 +157,84 @@
             <h1>K12</h1>
         </div>
 
-        <div id="okta-login-container"></div>
+        <div class="form-container">
+            <div class="form-title">Login</div>
+            
+            <div id="error-alert" class="message-box error"></div>
+            <div id="success-alert" class="message-box success"></div>
 
-        <div id="success-message" class="success-banner">
-            <h3>Login Verified!</h3>
-            <p>Session token generated successfully.</p>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" autocomplete="username">
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" autocomplete="current-password">
+            </div>
+
+            <button type="button" class="login-btn" id="submit-btn">LOG IN</button>
+        </div>
+
+        <div class="help-links">
+            <a href="#">Need help logging in?</a>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            <p style="color:#666; font-size:12px; margin-bottom:5px;">Ready to set up your K12 School account?</p>
+            <a href="#" style="font-weight:bold;">Get Started</a>
         </div>
     </div>
 
     <div class="image-column"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/okta-signin-widget/5.16.0/js/okta-sign-in.min.js" type="text/javascript"></script>
-    
+    <script src="https://global.oktacdn.com/okta-auth-js/7.2.0/okta-auth-js.min.js" type="text/javascript"></script>
+
     <script>
-        const config = {
-            baseUrl: 'https://integrator-4230027.okta.com',
+        // Direct Authentication Configuration
+        const authClient = new OktaAuth({
+            url: 'https://integrator-4230027.okta.com',
             clientId: '0oa13a39wvaIasHaV698',
             redirectUri: 'https://streamsbynight.github.io/Okta-K12/',
-            authParams: {
-                issuer: 'https://integrator-4230027.okta.com',
-                scopes: ['openid', 'profile', 'email'],
-                pkce: true
-            },
-            i18n: {
-                en: {
-                    'primaryauth.title': 'Login',
-                    'primaryauth.submit': 'LOG IN',
-                    'primaryauth.username.placeholder': 'Username'
-                }
-            },
-            transformUsername: function (username, operation) {
-                return username; 
-            }
-        };
+            issuer: 'https://integrator-4230027.okta.com/oauth2/default',
+            pkce: true
+        });
 
-        try {
-            const oktaSignIn = new OktaSignIn(config);
-            
-            oktaSignIn.renderEl({
-                el: '#okta-login-container'
-            }, function success(res) {
-                if (res.status === 'SUCCESS') {
-                    console.log('Successfully authorized!', res);
-                    
-                    document.getElementById('okta-login-container').style.display = 'none';
-                    document.getElementById('success-message').style.display = 'block';
-                    
-                    if (res.tokens) {
-                        oktaSignIn.authClient.tokenManager.setTokens(res.tokens);
-                    }
+        document.getElementById('submit-btn').addEventListener('click', async () => {
+            const usernameInput = document.getElementById('username').value;
+            const passwordInput = document.getElementById('password').value;
+            const errorAlert = document.getElementById('error-alert');
+            const successAlert = document.getElementById('success-alert');
+
+            // Reset alerts
+            errorAlert.style.display = 'none';
+            successAlert.style.display = 'none';
+
+            if (!usernameInput || !passwordInput) {
+                errorAlert.textContent = "Please fill in all fields.";
+                errorAlert.style.display = 'block';
+                return;
+            }
+
+            try {
+                // Background connection verification handler
+                const transaction = await authClient.signInWithCredentials({
+                    username: usernameInput,
+                    password: passwordInput
+                });
+
+                if (transaction.status === 'SUCCESS') {
+                    successAlert.textContent = "Success! Authentication handshake completed.";
+                    successAlert.style.display = 'block';
+                    console.log('Session Token:', transaction.sessionToken);
+                } else {
+                    errorAlert.textContent = `Status context: ${transaction.status}`;
+                    errorAlert.style.display = 'block';
                 }
-            }, function error(err) {
-                console.error("Widget layout rendering error:", err);
-            });
-            
-        } catch (setupError) {
-            console.error("Initialization failure:", setupError);
-        }
+            } catch (err) {
+                console.error(err);
+                errorAlert.textContent = err.message || "Authentication rejected.";
+                errorAlert.style.display = 'block';
+            }
+        });
     </script>
 </body>
 </html>
