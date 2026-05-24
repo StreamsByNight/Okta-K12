@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5">
     <title>K12 OLS Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="https://info-login.k12.com/common/img/favicon.ico">
     
     <style>
         html, body {
@@ -11,13 +13,13 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            font-family: Arial, Helvetica, sans-serif;
+            font-family: 'Public Sans', Arial, sans-serif;
             background-color: #ffffff;
             display: flex;
             overflow: hidden;
         }
 
-        /* Left Column Panel layout */
+        /* Left Column: Form Panels */
         .login-column {
             width: 40%;
             min-width: 450px;
@@ -32,11 +34,11 @@
             overflow-y: auto;
         }
 
-        /* Right Column Panel image display frame */
+        /* Right Column: K12 Student Asset background */
         .image-column {
             width: 60%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?auto=format&fit=crop&w=1200&q=80');
+            background-image: url('https://static.k12.com/k12_cdn/latest/ng_backgrounds/2022/images/student/4.jpg');
             background-size: cover;
             background-position: center;
         }
@@ -95,7 +97,7 @@
             outline: none;
         }
         .input-group input:focus {
-            border-color: #1a73e8;
+            border-color: #165ca3;
         }
 
         .action-btn {
@@ -135,6 +137,30 @@
             cursor: pointer;
         }
         .help-links a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: auto;
+            width: 100%;
+            max-width: 340px;
+            padding-top: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+        footer ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        footer ul li a {
+            color: #165ca3;
+            text-decoration: none;
+        }
+        footer ul li a:hover {
             text-decoration: underline;
         }
 
@@ -181,14 +207,14 @@
 
             <button type="button" class="action-btn" id="login-submit-btn">LOG IN</button>
 
-            <div class="help-links">
+            <div class="help-links" id="help-links-container">
                 <p class="section-label">Need help logging in?</p>
-                <a href="#">Forgot Password?</a>
-                <a href="#">Request Registration ID</a>
-                <a href="#">Unlock Account</a>
-                <a href="#">Forgot Username?</a>
+                <a href="https://integrator-4230027.okta.com/signin/forgot-password" target="_blank">Forgot Password?</a>
+                <a onclick="switchView('setup-view')">Request Registration ID</a>
+                <a href="https://integrator-4230027.okta.com/signin/verify" target="_blank">Unlock Account</a>
+                <a href="https://integrator-4230027.okta.com/signin/forgot-username" target="_blank">Forgot Username?</a>
                 <a href="tel:866-512-2273">Call 866-512-2273</a>
-                <a href="#">K12 Customer Support</a>
+                <a href="https://help.k12.com" target="_blank">K12 Customer Support</a>
                 
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
                 <p style="color:#666; font-size:12px; margin-bottom:5px;">Ready to set up your K12 School account?</p>
@@ -226,11 +252,21 @@
             <button type="button" class="action-btn" id="setup-submit-btn">SUBMIT CODE</button>
 
             <div class="help-links">
-                <a href="#">Need your Registration ID?</a>
+                <a onclick="alert('Please contact your administrator or check your welcome email to locate your Registration ID.')">Need your Registration ID?</a>
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
                 <a onclick="switchView('login-view')" style="font-weight:bold;">Back to Login</a>
             </div>
         </div>
+
+        <footer>
+            <div id="copyright">© <span id="year-placeholder"></span> Stride, Inc. All rights reserved. Learning Solutions.</div>
+            <ul>
+                <li><a href="https://www.stridelearning.com/privacy-policy.html" target="_blank">Privacy Policy</a></li>
+                <li><a href="https://www.k12.com/accessibility.html" target="_blank">Accessibility</a></li>
+                <li><a href="https://www.stridelearning.com/ip-policy.html" target="_blank">IP Policy</a></li>
+                <li><a href="https://www.stridelearning.com/terms-of-use.html" target="_blank">Terms of Use</a></li>
+            </ul>
+        </footer>
     </div>
 
     <div class="image-column"></div>
@@ -238,6 +274,8 @@
     <script src="https://global.oktacdn.com/okta-auth-js/7.2.0/okta-auth-js.min.js" type="text/javascript"></script>
 
     <script>
+        document.getElementById('year-placeholder').textContent = new Date().getFullYear();
+
         function switchView(viewId) {
             document.querySelectorAll('.view-panel').forEach(view => {
                 view.classList.remove('active');
@@ -253,7 +291,7 @@
             pkce: true
         });
 
-        // Form handler logic for login authentication pipeline requests
+        // Login Handler
         document.getElementById('login-submit-btn').addEventListener('click', async () => {
             const usernameInput = document.getElementById('username').value;
             const passwordInput = document.getElementById('password').value;
@@ -276,8 +314,12 @@
                 });
 
                 if (transaction.status === 'SUCCESS') {
-                    successAlert.textContent = "Success! Authentication handshake completed.";
+                    successAlert.textContent = "Success! Redirecting you to Canvas...";
                     successAlert.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'https://integrator-4230027.okta.com/home/bookmark/0oa13a39wvaIasHaV698/255';
+                    }, 1000);
                 }
             } catch (err) {
                 errorAlert.textContent = err.message || "Authentication credentials rejected.";
@@ -285,7 +327,7 @@
             }
         });
 
-        // Form handler logic for custom user registration enrollment pipelines
+        // Registration Handler
         document.getElementById('setup-submit-btn').addEventListener('click', async () => {
             const email = document.getElementById('setup-email').value;
             const firstName = document.getElementById('setup-firstname').value;
@@ -305,17 +347,16 @@
             }
 
             try {
-                // Initialize modern enrollment pipeline payload mapping 
                 const response = await authClient.idx.register({
                     userProfile: {
                         email: email,
                         firstName: firstName,
                         lastName: lastName,
-                        registrationID: registrationID // Matches custom Okta user variable
+                        registrationID: registrationID
                     }
                 });
 
-                console.log("Profile enrollment response returned:", response);
+                console.log("Profile enrollment response:", response);
                 successAlert.textContent = "Registration details approved and pushed into your user profiles directories!";
                 successAlert.style.display = 'block';
 
